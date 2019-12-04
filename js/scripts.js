@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', () => { //wait until everything lo
       people[i].numberOfEmployee = index;
     }
     console.log(people)
-    //Add listener events
+    //Add listener event to the cards
     let employeeCards = document.getElementsByClassName('card');
     for (i=0; i< employeeCards.length; i+=1){
       let index = i;
@@ -152,10 +152,10 @@ document.addEventListener('DOMContentLoaded', () => { //wait until everything lo
   searchField.addEventListener('keyup', function(){
     search = searchField.value.toLowerCase();
     let matches = [];
+    let employeeCards = document.getElementsByClassName('card');
     for (i=0; i<people.length; i+=1){
       if (people[i].firstName.toLowerCase().indexOf(search) !== -1 || people[i].lastName.toLowerCase().indexOf(search) !== -1){
         matches.push(people[i].numberOfEmployee);
-        let employeeCards = document.getElementsByClassName('card');
         for (i=0; i<employeeCards.length; i+=1){
           employeeCards[i].style.display = 'none';
         };
@@ -163,6 +163,11 @@ document.addEventListener('DOMContentLoaded', () => { //wait until everything lo
           employeeCards[matches[i]].style.display = 'block';
         };
       }
+    }
+    if(!search){
+      for (i=0; i<employeeCards.length; i+=1){
+        employeeCards[i].style.display = 'block';
+      };
     }
   })
 
