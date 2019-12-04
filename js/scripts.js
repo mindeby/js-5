@@ -68,17 +68,25 @@ document.addEventListener('DOMContentLoaded', () => { //wait until everything lo
     </div>`
       const modalWindow = document.createElement('DIV');
       modalWindow.setAttribute('id', "modal")
+      modalWindow.style.display = 'block';
       document.body.insertBefore(modalWindow, employeeGallery.nextElementSibling) //insert before script tags
       modalWindow.innerHTML += html;
       document.getElementById('modal-next').addEventListener('click', function(){
-        document.getElementById("modal").remove();
-        selectedEmployee += 1;
-        people[selectedEmployee].printModal(selectedEmployee)
+        if (selectedEmployee < people.length-1){
+          document.getElementById("modal").remove();
+          selectedEmployee += 1;
+          people[selectedEmployee].printModal(selectedEmployee)
+        }
       })
       document.getElementById('modal-prev').addEventListener('click', function(){
-        document.getElementById("modal").remove();
-        selectedEmployee -= 1;
-        people[selectedEmployee].printModal(selectedEmployee)
+          if(selectedEmployee >= 1){
+            document.getElementById("modal").remove();
+            selectedEmployee -= 1;
+            people[selectedEmployee].printModal(selectedEmployee)
+          }
+      })
+      document.getElementById('modal-close-btn').addEventListener('click', function(){
+          document.getElementById("modal").style.display = 'none';
       })
     };
   }
@@ -116,6 +124,7 @@ document.addEventListener('DOMContentLoaded', () => { //wait until everything lo
       index = i;
       people[i].numberOfEmployee = index;
     }
+    console.log(people)
     //Add listener events
     let employeeCards = document.getElementsByClassName('card');
     for (i=0; i< employeeCards.length; i+=1){
@@ -127,9 +136,36 @@ document.addEventListener('DOMContentLoaded', () => { //wait until everything lo
     }
   };
 
-  fetchData('https://randomuser.me/api/?results=12')
+  fetchData('https://randomuser.me/api/?results=12&nat=us,gb')
   const employeeGallery = document.getElementById('gallery');
   let selectedEmployee;
+
+  //implementing search bar
+  const searchBar = document.getElementsByClassName('search-container')[0];
+  searchBar.innerHTML += `<form action="#" method="get">
+      <input type="search" id="search-input" class="search-input" placeholder="Search...">
+      <input type="submit" value="&#x1F50D;" id="search-submit" class="search-submit">
+  </form>`;
+
+  const searchField = document.getElementsByClassName('search-input')[0];
+
+  searchField.addEventListener('keyup', function(){
+    search = searchField.value.toLowerCase();
+    let matches = [];
+    for (i=0; i<people.length; i+=1){
+      if (people[i].firstName.toLowerCase().indexOf(search) !== -1 || people[i].lastName.toLowerCase().indexOf(search) !== -1){
+        matches.push(people[i].numberOfEmployee);
+        let employeeCards = document.getElementsByClassName('card');
+        for (i=0; i<employeeCards.length; i+=1){
+          employeeCards[i].style.display = 'none';
+        };
+        for (i=0; i<matches.length; i+=1){
+          employeeCards[matches[i]].style.display = 'block';
+        };
+      }
+    }
+  })
+
 
 
 }); //End window listener
