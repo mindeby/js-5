@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => { //wait until everything lo
     .then(data => getEmployeeInfo(data))
   }
 
+  //check status of the response
   function checkStatus(response){
     if (response.ok) {
       return Promise.resolve(response)
@@ -28,10 +29,10 @@ document.addEventListener('DOMContentLoaded', () => { //wait until everything lo
       this.streetName = streetName;
       this.country = country;
       this.postcode = postcode;
-      this.birthday = birthday;
+      this.birthday = birthday.substring(0,10); //get first 10 characters only
       this.numberOfEmployee;
     }
-
+    //creates individual cards with each employee general information
     printHTML(){
       let html = `<div class="card">
           <div class="card-img-container">
@@ -46,6 +47,7 @@ document.addEventListener('DOMContentLoaded', () => { //wait until everything lo
       employeeGallery.innerHTML += html;
     }
 
+    //creates a modal with the selected employee detailed information
     printModal(selectedEmployee){
       let html = `<div class="modal">
           <button type="button" id="modal-close-btn" class="modal-close-btn"><strong>X</strong></button>
@@ -68,9 +70,10 @@ document.addEventListener('DOMContentLoaded', () => { //wait until everything lo
     </div>`
       const modalWindow = document.createElement('DIV');
       modalWindow.setAttribute('id', "modal")
-      modalWindow.style.display = 'block';
+      modalWindow.style.display = 'block'; //when closed by modal-close-btn bring it back up
       document.body.insertBefore(modalWindow, employeeGallery.nextElementSibling) //insert before script tags
       modalWindow.innerHTML += html;
+      //buttons: next, previous and closing, listener events
       document.getElementById('modal-next').addEventListener('click', function(){
         if (selectedEmployee < people.length-1){
           document.getElementById("modal").remove();
@@ -91,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => { //wait until everything lo
     };
   }
 
-  let people = [];
+  let people = []; //array with all employee objects
 
   //getting the required information from each employee
   function getEmployeeInfo(data){
@@ -100,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => { //wait until everything lo
   }
 
   function handleEmployeeInfo(employees){
-    employees.forEach(employee => {
+    employees.forEach(employee => { //create a new instance of employee for each
       let person = new Employee(employee.name.first,
                                 employee.name.last,
                                 employee.email,
@@ -119,12 +122,11 @@ document.addEventListener('DOMContentLoaded', () => { //wait until everything lo
     people.forEach(person => {
       person.printHTML();
     })
-    //setting number of employee
+    //setting number of employee property for each
     for (i=0; i<people.length;i+=1){
       index = i;
       people[i].numberOfEmployee = index;
     }
-    console.log(people)
     //Add listener event to the cards
     let employeeCards = document.getElementsByClassName('card');
     for (i=0; i< employeeCards.length; i+=1){
@@ -136,9 +138,9 @@ document.addEventListener('DOMContentLoaded', () => { //wait until everything lo
     }
   };
 
-  fetchData('https://randomuser.me/api/?results=12&nat=us,gb')
-  const employeeGallery = document.getElementById('gallery');
+  //General scope variables
   let selectedEmployee;
+  const employeeGallery = document.getElementById('gallery');
 
   //implementing search bar
   const searchBar = document.getElementsByClassName('search-container')[0];
@@ -171,6 +173,6 @@ document.addEventListener('DOMContentLoaded', () => { //wait until everything lo
     }
   })
 
-
-
+  //API call
+  fetchData('https://randomuser.me/api/?results=12&nat=us,gb')
 }); //End window listener
